@@ -2,22 +2,23 @@ import * as env from "./env";
 
 
 function pageEnv(win) {
+  console.log('page evn', env)
   env.setEnvType(env.ENV_PAGE)
 
   if (win === top) {
     // 开放一个接口，可供 iframe 调用
-    win.__init__ = function(win) {
+    win.__init__ = function (win) {
       page.init(win)
       console.log('[jsproxy] child page inited.', win.location.href)
     }
 
     // 用于记录 postMessage 发起者的 win
     let lastSrcWin
-    win.__set_srcWin = function(obj) {
+    win.__set_srcWin = function (obj) {
       lastSrcWin = obj || win
       return []
     }
-    win.__get_srcWin = function() {
+    win.__get_srcWin = function () {
       const ret = lastSrcWin
       lastSrcWin = null
       return ret
@@ -32,24 +33,26 @@ function pageEnv(win) {
     // 子页面直接调用 top 提供的接口，无需重复初始化
     top['__init__'](win)
 
-    win.__set_srcWin = function() {
+    win.__set_srcWin = function () {
       return top['__set_srcWin'](win)
     }
   }
 }
 
 function swEnv() {
+  console.log('sw evn', env)
   env.setEnvType(env.ENV_SW)
   // eslint-disable-next-line no-undef
   require('./sw.js')
 }
 
 function workerEnv(global) {
+  console.log('worker evn', env)
   env.setEnvType(env.ENV_WORKER)
 
   // eslint-disable-next-line no-undef
   require('./client.js').init(global, location.origin)
-  global.__set_srcWin = function() {
+  global.__set_srcWin = function () {
     return []
   }
 }
@@ -57,9 +60,12 @@ function workerEnv(global) {
 function main(global) {
   if ('onclick' in global) {
     pageEnv(global)
+    console.log(new Error().stack)
   } else if ('onfetch' in global) {
     swEnv()
+    console.log(new Error().stack)
   } else {
+    console.log(new Error().stack)
     workerEnv(global)
   }
 }

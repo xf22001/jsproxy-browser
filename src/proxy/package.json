@@ -1,0 +1,23 @@
+{
+  "name": "jsproxy-client",
+  "version": "0.0.1",
+  "description": "",
+  "main": "boot.js",
+  "directories": {
+    "lib": "lib"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "webpack --config webpack.dev.js",
+    "build": "webpack --config webpack.prod.js"
+  },
+  "keywords": [],
+  "author": "EtherDream",
+  "license": "MIT",
+  "dependencies": {},
+  "devDependencies": {
+    "eslint": "^5.16.0",
+    "webpack": "^4.44.2",
+    "webpack-cli": "^3.3.12"
+  }
+}
